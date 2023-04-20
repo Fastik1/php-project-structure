@@ -2,4 +2,8 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-Dotenv\Dotenv::createImmutable(__DIR__)->load();
+use app\components\DB;
+use app\components\Environments;
+
+Environments::load(__DIR__ . 1);
+DB::getConnetion();

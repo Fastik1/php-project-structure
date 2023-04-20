@@ -35,7 +35,8 @@ class DB
         try {
             $pdo = new PDO($dsn, $user, $password, $options);
         } catch (\PDOException $e) {
-            throw new \PDOException($e->getMessage(), (int) $e->getCode());
+            Logger::add('db', 'Exception DB connect: ' . $e->getMessage(), ['dsn' => $dsn]);
+            die('Error database');
         }
 
         return $pdo;
