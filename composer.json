@@ -1,8 +1,8 @@
 {
-    "name": "me/app",
+    "name": "Fastik1/php-project-structure",
     "type": "project",
     "require": {
-        "php": ">=8.1",
+        "php": ">=8.0",
         "ext-pdo": "*",
         "ext-curl": "*",
         "ext-json": "*",
