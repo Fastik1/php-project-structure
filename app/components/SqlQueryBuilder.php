@@ -13,25 +13,37 @@ class SqlQueryBuilder
 
     public static function update(string $table, array $data): string
     {
-        $arrayKeyLast = array_key_last($data);
-        foreach ($data as $key => $value) {
-            $columnsAndValues .= $key . '=:' . $key . ($key != $arrayKeyLast ? ', ' : null);
-        }
-
+        $columnsAndValues = join(
+            ', ',
+            array_map(
+                fn($key) => $key . '=:' . $key,
+                array_keys($data)
+            )
+        );
         return "UPDATE $table SET $columnsAndValues WHERE `id` = :id";
     }
-    
+
     public static function insert(string $table, array $data): string
     {
-        $arrayKeyLast = array_key_last($data);
-        $columns = '';
-        $values = '';
-        foreach ($data as $key => $value) {
-            $columns .= "`$key`" . ($key != $arrayKeyLast ? ', ' : null);
-            $values .= ':' . $key . ($key != $arrayKeyLast ? ', ' : null);
+        if (count($data) == 0) {
+            throw new \PDOException('Не переданы данные');
         }
 
-        return "INSERT INTO `$table` ($columns) VALUES ($values)";
+        $sql = "INSERT INTO `{$table}`";
+        $sql .= '(`' . join('`, `', array_keys($data[0])) . '`) VALUES ';
+        $sql_row = [];
+        foreach ($data as $row) {
+            $value = sprintf("('%s')", join("', '", array_values($row)));
+            $value = str_replace(['\'true\'', '\'TRUE\''], 'TRUE', $value);
+            $value = str_replace(['\'false\'', '\'FALSE\''], 'FALSE', $value);
+            $value = str_replace(['\'NULL\'', '\'null\''], 'NULL', $value);
+
+            $sql_row[] = $value;
+        }
+
+        $sql .= join(', ', $sql_row);
+
+        return $sql;
     }
 
     public static function delete(string $table): string
