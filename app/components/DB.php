@@ -6,15 +6,15 @@ use PDO;
 
 class DB
 {
-    private static ?PDO $connetion = null;
+    private static ?PDO $connection = null;
 
-    public static function getConnetion(): PDO
+    public static function getConnection(): PDO
     {
-        if (self::$connetion === null) {
-            self::$connetion = self::connect();
+        if (self::$connection === null) {
+            self::$connection = self::connect();
         }
 
-        return self::$connetion;
+        return self::$connection;
     }
 
     private static function connect(): PDO
